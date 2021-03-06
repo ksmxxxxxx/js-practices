@@ -1,24 +1,29 @@
 import fs from 'fs'
+import readline from 'readline'
 import crypto from 'crypto'
 
-const title = 'Using fs.writeFile() with file descriptors'
-const body = 'When file is a file descriptor, the behavior is almost identical to directly calling fs.write() like:'
+// const title = 'Using fs.writeFile() with file descriptors'
+// const body = 'When file is a file descriptor, the behavior is almost identical to directly calling fs.write() like:'
 const uuid = crypto.randomBytes(16).toString('hex')
 const file = `data/${uuid}.json`
 const charset = 'utf-8'
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
+
+let tempStrageStdinText = ''
 
 function Note () {
   return {
     uuid: '',
-    title: '',
     body: ''
   }
 }
 
-function writeNote (uuid, title, body) {
+function writeNote (uuid, body) {
   const note = new Note()
   note.uuid = uuid
-  note.title = title
   note.body = body
   const data = JSON.stringify(note, null, 2)
   fs.open(file, 'a', err => {
@@ -29,4 +34,23 @@ function writeNote (uuid, title, body) {
   })
 }
 
-writeNote(uuid, title, body)
+function addNewNote () {
+  rl.on('line', (input) => {
+    tempStrageStdinText += `${input}\n`
+  }).on('close', () => {
+    writeNote(uuid, tempStrageStdinText)
+  })
+}
+
+addNewNote()
+
+// 標準入力したテキストをオブジェクトに登録
+
+// rl.question('please input text for title of new note: ', (answer) => {
+//   console.log(`title: ${answer}`)
+// })
+// ディレクトリの中のファイルを取得する
+// fs.readdir('data', (err, file) => {
+//   if (err) throw err
+//   console.log(file)
+// })
