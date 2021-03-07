@@ -42,7 +42,28 @@ function addNewNote () {
   })
 }
 
-addNewNote()
+function filterJsonFiles (files) {
+  return files.filter(file => { return /.*\.json$/.test(file) })
+}
+
+function pickFirstLineNote (files) {
+  return files.map(file => {
+    return JSON.parse(fs.readFileSync(`data/${file}`, charset)).body.split('\n')[0]
+  })
+}
+
+function displayNoteList () {
+  fs.readdir('data', (err, files) => {
+    if (err) throw err
+    const jsonFiles = filterJsonFiles(files)
+    const firstLineNote = pickFirstLineNote(jsonFiles).join('\n')
+    console.log(firstLineNote)
+    process.exit(0)
+  })
+}
+
+displayNoteList()
+// addNewNote()
 
 // 標準入力したテキストをオブジェクトに登録
 
