@@ -4,8 +4,6 @@ import minimist from 'minimist'
 
 import Json from './storage.js'
 
-const storage = new Json()
-
 class Note {
   rl () {
     return readline.createInterface({
@@ -71,6 +69,7 @@ class Note {
 }
 
 const argv = minimist(process.argv.slice(2))
+const storage = new Json()
 const note = new Note()
 
 if (argv.r) {
